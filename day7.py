@@ -15,10 +15,37 @@ data = Puzzle(year=2020, day=7).input_data
             - Remove all words with bag from the input, plural and singular
             - split on contain and then comma
             - load into dictionary
-        - Because we are looking for the shiny gold bag, reverse the direction of the graph so it shows 
-            'is contained by' rather than 'contains'. This should give us some performance gain as we can 
-            start from the shiny gold bag and work toward the container bags
-        - Use a BFS to get to all the leaf nodes
-        - Becareful of cycles
+            - track indegrees so we know which bags are outermost
+        - Topological Sort to order the graph, will discover cycles if any
+            - we don't need to do this
+        - Use a DFS to find which of the starting nodes lead to shiny gold
 """
+from collections import defaultdict, deque
+import re
 
+graph = defaultdict(set)
+
+# Preprocessing the input
+for line in data.split('\n'):
+    line = line.replace('bags', 'bag').replace('bag', '').replace('.','').replace(' no ', ' 0 ')
+    container, contained = map(str.strip, line.split('contain'))
+    for bag in map(str.strip, contained.split(',')):
+        count, name = re.match(r'(\d+)\s([\w\s]+)', bag).groups()
+        if name == 'other': graph[container]
+        else: graph[container].add((name, count))
+
+#DFS for question 1
+goldies = set()
+
+def dfs(name, parent=None):
+    if parent == None: parent = name
+    if name == 'shiny gold':
+        goldies.add(parent)
+        return
+    for neighbor, count in graph[name]:
+        dfs(neighbor, parent)
+
+for bag in (x for x in graph if x != 'shiny gold'):
+    dfs(bag)
+
+print(f'Number of bags that can contain a Shiny Gold bag: {len(goldies)}')
