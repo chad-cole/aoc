@@ -15,12 +15,9 @@ data = Puzzle(year=2020, day=7).input_data
             - Remove all words with bag from the input, plural and singular
             - split on contain and then comma
             - load into dictionary
-            - track indegrees so we know which bags are outermost
-        - Topological Sort to order the graph, will discover cycles if any
-            - we don't need to do this
         - Use a DFS to find which of the starting nodes lead to shiny gold
 """
-from collections import defaultdict, deque
+from collections import defaultdict
 import re
 
 graph = defaultdict(set)
@@ -32,7 +29,7 @@ for line in data.split('\n'):
     for bag in map(str.strip, contained.split(',')):
         count, name = re.match(r'(\d+)\s([\w\s]+)', bag).groups()
         if name == 'other': graph[container]
-        else: graph[container].add((name, count))
+        else: graph[container].add((name, int(count)))
 
 #DFS for question 1
 goldies = set()
@@ -48,4 +45,11 @@ def dfs(name, parent=None):
 for bag in (x for x in graph if x != 'shiny gold'):
     dfs(bag)
 
+"""Recursively traverse the Graph and Sum the Counts and Multipliers"""
+def get_count(name, multiplier=1):
+    if not graph[name]: return multiplier
+    sub_count = sum(get_count(x,y) for x,y in graph[name])
+    return multiplier * (1 + sub_count)
+
 print(f'Number of bags that can contain a Shiny Gold bag: {len(goldies)}')
+print(f'Number of bags inside a Shiny Gold bag: {get_count("shiny gold")-1}')
