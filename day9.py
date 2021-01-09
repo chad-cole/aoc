@@ -43,7 +43,7 @@ print(f'First incorrect number: {part1}')
 nums = iter(int(x) for x in data.split('\n'))
 
 window = deque(islice(nums, 2))
-minn, maxn, ws = min(window), max(window), sum(window)
+ws = sum(window)
 
 while ws != part1:
     if ws < part1: 
