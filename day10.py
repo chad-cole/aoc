@@ -52,7 +52,7 @@ graph = defaultdict(tuple)
 for x in reversed(data):
     graph[x] = tuple(x+i for i in range(1,4) if x+i in graph)
 
-@lru_cache()
+@lru_cache(10)
 def count_ways(node):
     if not graph[node]: return 1
     return sum(count_ways(x) for x in graph[node])
