@@ -13,6 +13,7 @@ data = Puzzle(year=2020, day=13).input_data
         - Find the number of the earliest bus you could take multiplied by the number of minutes you have to wait
     
     Task 2:
+        - Find the first number in the sequence where each bus in the list comes one minute after the next
 
     Strategy (Part 1): 
         - Use modulo to find the right bus
