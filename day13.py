@@ -43,9 +43,9 @@ from functools import reduce
 crt_input = list((-i, int(x)) for i,x in enumerate(buses.split(',')) if x != 'x')
 
 def chinese_remainder_theorem(r1, n1, r2, n2):
-    x, y = pow(n1, -1, n2), pow(n2, -1, n1) #Calculate Modular Inverses
+    b1, b2 = pow(n1, -1, n2), pow(n2, -1, n1) #Calculate Modular Inverses
     m = n1 * n2
-    n = r2 * x * n1 + r1 * y * n2
+    n = r2 * b1 * n1 + r1 * b2 * n2
     return (n % m + m) % m, m
 
 part2, _ = reduce(lambda x,y: chinese_remainder_theorem(*x,*y), crt_input)
